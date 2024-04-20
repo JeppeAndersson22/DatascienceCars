@@ -16,19 +16,19 @@ ua = UserAgent()
 # List to store DataFrames for each model
 data_frames = []
 
-brands_and_models = {
-"VW": ["Tiguan"]
+{
+   "VW": [ "Tiguan", "Touran", "Golf", "Passat", "Polo", "Arteon", "Atlas", "Beetle", "Jetta", "ID. Buzz", "Touareg", "Sharan", "T-Cross", "T-Roc" ],
+  "Toyota": ["4Runner", "Avalon", "Camry", "Corolla", "Highlander", "Land Cruiser", "Prius", "RAV4", "Supra", "Yaris"],
+  "Audi": ["A1", "A3", "A4", "A5", "A6", "A7", "A8", "Q2", "Q3", "Q5", "Q7", "Q8", "TT", "R8"],
+  "Mercedes": ["A-Class", "B-Class", "C-Class", "E-Class", "S-Class", "G-Class", "GLA", "GLC", "GLE", "GLS", "CLA", "CL", "SLK", "AMG GT"],
+  "Ford": ["Fiesta", "Focus", "Fusion", "Mustang", "Explorer", "Edge", "Escape", "Expedition", "F-150", "Transit"],
+  "Renault": ["Clio", "Megane", "Scenic", "Laguna", "Espace", "Kangoo", "Twingo", "Zoe", "Captur", "Kadjar"],
+  "Peugeot": ["208", "308", "508", "2008", "3008", "5008", "Partner", "Expert", "Boxer", "Rifter"],
+  "BMW": ["1 Series", "2 Series", "3 Series", "4 Series", "5 Series", "6 Series", "7 Series", "X1", "X3", "X5", "Z4", "M2", "M4", "i3"],
+  "Opel": ["Corsa", "Astra", "Insignia", "Zafira", "Meriva", "Adam", "Crossland X", "Grandland X", "Mokka", "Vivaro"],
+  "Skoda": ["Fabia", "Rapid", "Octavia", "Superb", "Kodiaq", "Karoq", "Scala", "Kamiq", "Yeti", "Citigo"]
 }
 
-
-'''
-brands_and_models = {
-    "VW": ["Tiguan", "Touran"],
-    "Audi": ["A1","A2","A3", "A4", "A5", "A6"],
-    "Ford": ["Fusion", "Focus", "Escape"],
-    # Add more brands and models as needed
-}
-'''
 
 def scrape_car_info(soup, url, x, model, brand, df):
     headers = {'User-Agent': ua.random}
@@ -88,7 +88,7 @@ def scrapeCars():
             while True:
                 url = base_url + str(page_number)
                 response = requests.get(url)
-                #print(f"URL: {url}, Response Status Code: {response.status_code}")
+                print(f"URL: {url}, Response Status Code: {response.status_code}")
                 if response.status_code == 200:
                     soup = BeautifulSoup(response.content, 'html.parser')
                     if has_listings(soup):
@@ -103,8 +103,8 @@ def scrapeCars():
                         break
                 else:
                     break
-                #time.sleep(10)
-        #time.sleep(100)
+                time.sleep(10)
+        time.sleep(100)
     
         result_df = pd.concat(data_frames, ignore_index=True)
     return result_df
