@@ -16,7 +16,8 @@ ua = UserAgent()
 # List to store DataFrames for each model
 data_frames = []
 
-{
+brands_and_models = {
+
    "VW": [ "Tiguan", "Touran", "Golf", "Passat", "Polo", "Arteon", "Atlas", "Beetle", "Jetta", "ID. Buzz", "Touareg", "Sharan", "T-Cross", "T-Roc" ],
   "Toyota": ["4Runner", "Avalon", "Camry", "Corolla", "Highlander", "Land Cruiser", "Prius", "RAV4", "Supra", "Yaris"],
   "Audi": ["A1", "A3", "A4", "A5", "A6", "A7", "A8", "Q2", "Q3", "Q5", "Q7", "Q8", "TT", "R8"],
@@ -28,7 +29,6 @@ data_frames = []
   "Opel": ["Corsa", "Astra", "Insignia", "Zafira", "Meriva", "Adam", "Crossland X", "Grandland X", "Mokka", "Vivaro"],
   "Skoda": ["Fabia", "Rapid", "Octavia", "Superb", "Kodiaq", "Karoq", "Scala", "Kamiq", "Yeti", "Citigo"]
 }
-
 
 def scrape_car_info(soup, url, x, model, brand, df):
     headers = {'User-Agent': ua.random}
