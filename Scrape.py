@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 from fake_useragent import UserAgent
-import os
+
 
 
 ######################
@@ -17,8 +17,9 @@ ua = UserAgent()
 data_frames = []
 
 brands_and_models = {
-    "VW": ["Tiguan"]
+"VW": ["Tiguan"]
 }
+
 
 '''
 brands_and_models = {
@@ -28,7 +29,8 @@ brands_and_models = {
     # Add more brands and models as needed
 }
 '''
-def scrape_car_info(url, x, model, brand):
+
+def scrape_car_info(soup, url, x, model, brand, df):
     headers = {'User-Agent': ua.random}
     div_elements_left = soup.find_all('div', class_='listing-item-info-left')
     j = 4
@@ -42,8 +44,9 @@ def scrape_car_info(url, x, model, brand):
             j += 1
         x += 1
         j = 4
+    return df
 
-def scrape_car_price(url, y, model):
+def scrape_car_price(soup,url, y, df):
     headers = {'User-Agent': ua.random}
     div_elements_price = soup.find_all('div', class_='listing-item-price')
     for div_price in div_elements_price:
@@ -52,7 +55,7 @@ def scrape_car_price(url, y, model):
         y += 1
 
 
-def scrape_car_header(url, z, model):
+def scrape_car_header(soup,url, z, df):
     headers = {'User-Agent': ua.random}
     div_elements_header = soup.find_all('div', class_='listing-item-header')
     for div_header in div_elements_header:
@@ -73,48 +76,35 @@ def has_listings(soup):
     return no_results_message is None
 
 
-for brand, models in brands_and_models.items():
+def scrapeCars():
+    for brand, models in brands_and_models.items():
 
-    for model in models:
-        df = pd.DataFrame(columns=['Mærke','Model', 'Sælger','DageTilSalg', 'Årstal', 'Kilometertal', 'Motor', 'Gear', 'Hestekræfter', 'Km/L', 'Co2', 'Pris'])
-        x = 0
-        y = 0
-        z = 0
-        page_number = 1
-        base_url = f"https://www.autouncle.dk/da/brugte-biler/{brand}/{model}?page="
-        while True:
-            url = base_url + str(page_number)
-            response = requests.get(url)
-            #print(f"URL: {url}, Response Status Code: {response.status_code}")
-            if response.status_code == 200:
-                soup = BeautifulSoup(response.content, 'html.parser')
-                if has_listings(soup):
-                    scrape_car_info(url, x, model, brand)
-                    scrape_car_price(url, y, model)
-                    scrape_car_header(url, z, model)
-                    print(df)
-                    data_frames.append(df.copy()) 
-                    page_number += 1
-                    
+        for model in models:
+            x = 0
+            y = 0
+            z = 0
+            page_number = 1
+            base_url = f"https://www.autouncle.dk/da/brugte-biler/{brand}/{model}?page="
+            while True:
+                url = base_url + str(page_number)
+                response = requests.get(url)
+                #print(f"URL: {url}, Response Status Code: {response.status_code}")
+                if response.status_code == 200:
+                    soup = BeautifulSoup(response.content, 'html.parser')
+                    if has_listings(soup):
+                        df = pd.DataFrame(columns=['Mærke','Model', 'Sælger','DageTilSalg', 'Årstal', 'Kilometertal', 'Motor', 'Gear', 'Hestekræfter', 'Km/L', 'Co2', 'Pris'])
+                        scrape_car_info(soup,url, x, model, brand, df)
+                        scrape_car_price(soup,url, y, df)
+                        scrape_car_header(soup,url, z, df)
+                        data_frames.append(df.copy()) 
+                        page_number += 1
+                        
+                    else:
+                        break
                 else:
                     break
-            else:
-                break
-            #time.sleep(10)
-    #time.sleep(100)
-
-# Concatenate all DataFrames in the list into a single DataFrame
-result_df = pd.concat(data_frames, ignore_index=True)
-print (result_df)
-
-'''
-# Specify the file name and location on the desktop
-file_name = "car_data.xlsx"
-desktop_path = "/Users/jeppeandersson/Desktop"
-file_path = os.path.join(desktop_path, file_name)
-
-# Save the DataFrame to an Excel file
-result_df.to_excel(file_path, index=False)
-print(f"Excel file saved to: {file_path}")
-'''
-
+                #time.sleep(10)
+        #time.sleep(100)
+    
+        result_df = pd.concat(data_frames, ignore_index=True)
+    return result_df
