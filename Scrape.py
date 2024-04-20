@@ -87,7 +87,7 @@ def scrapeCars():
             base_url = f"https://www.autouncle.dk/da/brugte-biler/{brand}/{model}?page="
             while True:
                 url = base_url + str(page_number)
-                response = requests.get(url)
+                response = requests.get(url, timeout = 60)
                 print(f"URL: {url}, Response Status Code: {response.status_code}")
                 if response.status_code == 200:
                     soup = BeautifulSoup(response.content, 'html.parser')
