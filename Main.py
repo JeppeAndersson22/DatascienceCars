@@ -7,11 +7,9 @@ import pandas as pd
 
 
 dirtyData = scrapeCars()
-pd.set_option('display.max_rows', None)  # Show all rows
-pd.reset_option('display.max_columns', None)  # Show all rows
+print(len(dirtyData))
 cleanData = cleaning(dirtyData)
-print(cleanData)
-print(cleanData.dtypes)
+
 
 ### TIL EXCEL ###
 

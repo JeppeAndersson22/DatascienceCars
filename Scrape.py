@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
+import os
 from fake_useragent import UserAgent
 
 
@@ -16,6 +17,7 @@ ua = UserAgent()
 # List to store DataFrames for each model
 data_frames = []
 
+
 brands_and_models = {
 
    "VW": [ "Tiguan", "Touran", "Golf", "Passat", "Polo", "Arteon", "Atlas", "Beetle", "Jetta", "ID. Buzz", "Touareg", "Sharan", "T-Cross", "T-Roc" ],
@@ -29,7 +31,11 @@ brands_and_models = {
   "Opel": ["Corsa", "Astra", "Insignia", "Zafira", "Meriva", "Adam", "Crossland X", "Grandland X", "Mokka", "Vivaro"],
   "Skoda": ["Fabia", "Rapid", "Octavia", "Superb", "Kodiaq", "Karoq", "Scala", "Kamiq", "Yeti", "Citigo"]
 }
-
+'''
+brands_and_models = {
+    "Peugeot": ["208", "308", "508"]
+}
+'''
 def scrape_car_info(soup, url, x, model, brand, df):
     headers = {'User-Agent': ua.random}
     div_elements_left = soup.find_all('div', class_='listing-item-info-left')
@@ -103,8 +109,21 @@ def scrapeCars():
                         break
                 else:
                     break
-                time.sleep(10)
-        time.sleep(100)
-    
+                time.sleep(5)
+        time.sleep(5)
         result_df = pd.concat(data_frames, ignore_index=True)
     return result_df
+
+### TIL EXCEL ###
+
+# Specify the file name and location on the desktop
+file_name = "dirty_car_data.xlsx"
+current_directory = os.getcwd()
+path = current_directory
+file_path = os.path.join(path, file_name)
+
+
+# Save the DataFrame to an Excel file
+dirtyData = scrapeCars()
+dirtyData.to_excel(file_path, index=False)
+print(f"Excel file saved to: {file_path}")
